@@ -28,6 +28,10 @@ const Chat = () => {
         <div className="message">
           <img src="./avatar.png" alt="" />
           <div className="texts">
+            <img
+              src="https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630"
+              alt=""
+            />
             <p>Lorem, ipsum dolor sit amet</p>
             <span>1 min ago</span>
           </div>

@@ -2,9 +2,10 @@ import "./AddUser.css";
 const AddUser = () => {
   return (
     <div className="adduser">
-      <input type="text" name="username" id="" placeholder="Username" />
-      <button>Search</button>
-      <form action=""></form>
+      <form action="">
+        <input type="text" name="username" id="" placeholder="Username" />
+        <button>Search</button>
+      </form>
       <div className="user">
         <div className="detail">
           <img src="./avatar.png" alt="" />
