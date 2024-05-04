@@ -1,13 +1,55 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 import EmojiPicker from "emoji-picker-react";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [image, setImage] = useState(null); // État pour stocker l'URL de l'image
+  const fileInputRef = useRef(null); // Référence pour l'input de type file
+  const endRef = useRef(null);
+
+  // Fonction pour gérer le changement de l'image
+  const handleTextImage = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.substr(0, 5) === "image") {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImage(null);
+    }
+  };
+
+  // Scroll to the bottom of the chat
+  useEffect(() => {
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
   };
+
+  const triggerFileSelectPopup = () => fileInputRef.current.click(); // Déclencheur pour l'input de type file
+
+  // Déclencheur pour ouvrir la caméra
+
+  const handleCamera = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        const video = document.createElement("video");
+        document.body.appendChild(video);
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <div className="chat">
       <div className="top">
@@ -25,53 +67,27 @@ const Chat = () => {
         </div>
       </div>
       <div className="center">
-        <div className="message">
-          <img src="./avatar.png" alt="" />
-          <div className="texts">
-            <img
-              src="https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630"
-              alt=""
-            />
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
+        {/* Affichage de l'image sélectionnée ici */}
+        {image && (
+          <div className="message own">
+            <div className="texts">
+              <img src={image} alt="Selected" />
+            </div>
           </div>
-        </div>
-        <div className="message own">
-          <div className="texts">
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message">
-          <img src="./avatar.png" alt="" />
-          <div className="texts">
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message own">
-          <div className="texts">
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message">
-          <div className="texts">
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className="message own">
-          <div className="texts">
-            <p>Lorem, ipsum dolor sit amet</p>
-            <span>1 min ago</span>
-          </div>
-        </div>
+        )}
+        {/* Reste des messages */}
       </div>
       <div className="bottom">
         <div className="icons">
-          <img src="./img.png" alt="" />
-          <img src="./camera.png" alt="" />
+          <img src="./img.png" alt="" onClick={triggerFileSelectPopup} />
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleTextImage}
+            accept="image/*"
+          />
+          <img src="./camera.png" alt="" onClick={handleCamera} />
           <img src="./mic.png" alt="" />
         </div>
         <input
